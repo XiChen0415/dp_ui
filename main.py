@@ -1,16 +1,17 @@
 import tkinter as tk
 import tkinter.messagebox as mbox
-import base64
 import os
 import tkinter.filedialog
 from tkinter import StringVar, IntVar
+import cv2
+from PIL import Image, ImageTk
 
 
 class MainFrame(tk.Frame):
     def __init__(self, master):
         self.root = master
         self.root.title('数据收集及处理工具')
-        self.root.geometry('600x300')
+        self.root.geometry('1480x1224')
         # self.root.iconbitmap("./logo.icns")
         MainPage(self.root)
 
@@ -55,7 +56,7 @@ class MainPage():
 
     def switch_3(self,):
         self.MainPage.destroy()
-        DataValidate(self.master)
+        DataValidate(self.master, img_lb=None, filepath=None)
 
     def quit(self):
         # quit_bool = mbox.askokcancel('提示', '确定要退出吗？')
@@ -79,11 +80,11 @@ class DataCollect(tk.Frame):
                   width=40,
                   text='视频截取',
                   command=self.capture_video).pack()
+        tk.Label(self.DataCollect, textvariable=self.text).pack()
         tk.Button(self.DataCollect,
-                  width=40,
+                  width=30,
                   text='返回上一层',
                   command=self.back_to_main).pack()
-        tk.Label(self.DataCollect, textvariable=self.text).pack()
 
     def back_to_main(self):
         self.DataCollect.destroy()
@@ -96,7 +97,7 @@ class DataCollect(tk.Frame):
         filepath = tk.filedialog.askdirectory()
         if filepath != '':
             self.text.set("您选择的文件是:"+filepath)
-            btn = tk.Button(self.DataCollect, text='确认开始', command=tk.DISABLED).pack()
+            # tk.Button(self.DataCollect, text='确认开始', command=tk.DISABLED).pack()
         else:
             self.text.set("您没有选择任何文件！")
             btn.destroy()
@@ -112,11 +113,11 @@ class DataProcess(tk.Frame):
         tk.Button(self.DataProcess,
                   width=40,
                   text='图片裁剪',
-                  command=tk.DISABLED).pack()
+                  command=self.CropPicture).pack()
         tk.Button(self.DataProcess,
                   width=40,
                   text='图片翻转',
-                  command=tk.DISABLED).pack()
+                  command=self.FlipPicture).pack()
         tk.Button(self.DataProcess,
                   width=40,
                   text='返回上一层',
@@ -126,18 +127,26 @@ class DataProcess(tk.Frame):
         self.DataProcess.destroy()
         MainPage(self.master)
 
+    def CropPicture(self):
+        mbox.showinfo(title="待补全", message="功能待补全")
+
+    def FlipPicture(self):
+        mbox.showinfo(title="待补全", message="功能待补全")
+
 
 class DataValidate(tk.Frame):
-    def __init__(self, master):
+    def __init__(self, master, img_lb, filepath):
         self.master = master
         self.DataValidate = tk.Frame(self.master,)
         self.DataValidate.pack()
+        self.filepath = StringVar()
+        self.img_lb = tk.Label(self.DataValidate)
         tk.Label(self.DataValidate,
                  text='数据检验').pack()
         tk.Button(self.DataValidate,
                   width=40,
                   text='人体框任务',
-                  command=tk.DISABLED).pack()
+                  command=self.det_validate).pack()
         tk.Button(self.DataValidate,
                   width=40,
                   text='关节点任务',
@@ -146,10 +155,25 @@ class DataValidate(tk.Frame):
                   width=40,
                   text='返回上一层',
                   command=self.back_to_main).pack()
+        self.img_lb.pack()
 
     def back_to_main(self):
         self.DataValidate.destroy()
         MainPage(self.master)
+
+    def det_validate(self):
+        mbox.showinfo(title="待补全", message="功能待补全")
+        self.filepath = '../fiture_dataset/2020_Det_1/Det_1.jpeg'
+        img = cv2.imread(self.filepath)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(img)
+        imgtk = ImageTk.PhotoImage(image=img)
+        # tk.Label(self.DataValidate, image=imgtk).pack()
+        self.img_lb.config(image=imgtk)
+        self.img_lb.image = imgtk
+
+    def pose_validate(self):
+        mbox.showinfo(title="待补全", message="功能待补全")
 
 
 if __name__ == "__main__":
