@@ -2,14 +2,15 @@ import tkinter as tk
 import tkinter.messagebox as mbox
 import base64
 import os
-# from StartPage import *
+import tkinter.filedialog
+from tkinter import StringVar, IntVar
 
 
 class MainFrame(tk.Frame):
     def __init__(self, master):
         self.root = master
         self.root.title('数据收集及处理工具')
-        self.root.geometry('800x600')
+        self.root.geometry('600x300')
         # self.root.iconbitmap("./logo.icns")
         MainPage(self.root)
 
@@ -19,8 +20,10 @@ class MainPage():
         self.master = master
         self.MainPage = tk.Frame(self.master,)
         self.MainPage.pack()
-        # master.title('数据收集及处理工具')
-        # master.geometry('800x600')
+        tk.Label(self.MainPage,
+                 text="选择你要使用的工具：                                                                   ",
+                 fg='red'
+                 ).pack()
         tk.Button(self.MainPage,
                   text="数据收集",
                   # height=5,
@@ -44,7 +47,7 @@ class MainPage():
 
     def switch_1(self,):
         self.MainPage.destroy()
-        DataCollect(self.master)
+        DataCollect(self.master, text=None)
 
     def switch_2(self,):
         self.MainPage.destroy()
@@ -55,34 +58,48 @@ class MainPage():
         DataValidate(self.master)
 
     def quit(self):
-        quit_bool = mbox.askokcancel('提示', '确定要退出吗？')
-        if quit_bool is True:
-            root.destroy()
+        # quit_bool = mbox.askokcancel('提示', '确定要退出吗？')
+        # if quit_bool is True:
+        root.destroy()
 
 
 class DataCollect(tk.Frame):
-    def __init__(self, master):
+    def __init__(self, master, text):
         self.master = master
         self.DataCollect = tk.Frame(self.master,)
         self.DataCollect.pack()
+        self.text = StringVar()
         tk.Label(self.DataCollect,
                  text='数据收集').pack()
         tk.Button(self.DataCollect,
                   width=40,
                   text='设备端存图下载',
-                  command=tk.DISABLED).pack()
+                  command=self.download_from_device).pack()
         tk.Button(self.DataCollect,
                   width=40,
                   text='视频截取',
-                  command=tk.DISABLED).pack()
+                  command=self.capture_video).pack()
         tk.Button(self.DataCollect,
                   width=40,
                   text='返回上一层',
                   command=self.back_to_main).pack()
+        tk.Label(self.DataCollect, textvariable=self.text).pack()
 
     def back_to_main(self):
         self.DataCollect.destroy()
         MainPage(self.master)
+
+    def download_from_device(self):
+        mbox.showinfo(title="待补全", message="功能待补全")
+
+    def capture_video(self):
+        filepath = tk.filedialog.askdirectory()
+        if filepath != '':
+            self.text.set("您选择的文件是:"+filepath)
+            btn = tk.Button(self.DataCollect, text='确认开始', command=tk.DISABLED).pack()
+        else:
+            self.text.set("您没有选择任何文件！")
+            btn.destroy()
 
 
 class DataProcess(tk.Frame):
